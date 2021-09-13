@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+ * Victor Rodrigues da Silva        n:12566140
+ * 
+ * jogo de campo minado, o campo deve estar em arquivo separado e tem 3 comandos
+ * 1 mostra o tabuleiro
+ * 2 preenche as dicas e mostra o tabuleiro
+ * 3 recebe coordenadas e mostra o tabuleiro em mascara ou real dependendo do conteudo
+ * do ponto escolhido
+*/
+
 struct point
 {
     int X;
@@ -61,23 +71,23 @@ char *readFileLine(FILE *leitura)
     return line;
 }
 
+//substitui o valor '.' pelo valor de uma bomba ao lado
 void addHint(char **board, int y, int x)
 {
     int tmp;
     if (board[y][x] == '.')
     {
         board[y][x] = '1';
-        //printf("atribuido\n");
     }
     else if (board[y][x] != '*')
     {
         tmp = (int)board[y][x];
         tmp++;
         board[y][x] = (char)tmp;
-        //printf("aumentado\n");
     }
 }
 
+//recebe uma mina e adiciona 1 a todos os '.' ao redor
 void fillHints(char **board, struct point mine)
 {
     //printf("\nmina:%d %d\n", mine.Y, mine.X);
@@ -123,6 +133,8 @@ void fillHints(char **board, struct point mine)
     }
 }
 
+//copia os valores do campo com dicas para a matriz com mascara, 
+//contanto que estejam vizinhos a um ponto perto de onde foi criado
 void reveal(char **board, struct point current, char **mask)
 {
     //printf("%d %d\n", size.Y, size.X);
@@ -208,44 +220,7 @@ void reveal(char **board, struct point current, char **mask)
     }
 }
 
-/*
-void reveal(char **board, int X, int Y, char **mask)
-{
-    if (X - 1 >= 0)
-    {
-        if (board[Y][X - 1] == '.')
-        {
-            mask[Y][X - 1] = board[Y][X - 1] ;
-            reveal(board, X - 1, Y, mask);
-        }
-    }
-    if (X + 1 < strlen(board[Y]))
-    {
-        if (board[Y][X + 1] == '.')
-        {
-            mask[Y][X - 1] = board[Y][X - 1] ;
-            reveal(board, X + 1, Y, mask);
-        }
-    }
-    if (Y - 1 >= 0)
-    {
-        if (board[Y - 1][X] == '.')
-        {
-            mask[Y - 1][X] = board[Y - 1][X] ;
-            reveal(board, X, Y - 1, mask);
-        }
-    }
-    if (Y + 1 < size.Y)
-    {
-        if (board[Y + 1][X] == '.')
-        {
-            mask[Y + 1][X] = board[Y + 1][X] ;
-            reveal(board, X, Y + 1, mask);
-        }
-    }
-}
-*/
-
+//cria uma mascara de mesmas dimesoes do campo e preenche com X
 char **fillMaskBoard()
 {
     int i, j;
@@ -267,6 +242,7 @@ char **fillMaskBoard()
     return mask;
 }
 
+//mostra um campo ou mascara
 void showBoard(char **board)
 {
     int i, j;

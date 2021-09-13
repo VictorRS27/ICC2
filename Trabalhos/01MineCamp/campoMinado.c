@@ -90,45 +90,36 @@ void addHint(char **board, int y, int x)
 //recebe uma mina e adiciona 1 a todos os '.' ao redor
 void fillHints(char **board, struct point mine)
 {
-    //printf("\nmina:%d %d\n", mine.Y, mine.X);
     if (mine.Y - 1 >= 0)
     {
         if (mine.X - 1 >= 0)
         {
-            //printf("sou A e mandei encher %d %d", mine.Y - 1, mine.X - 1);
             addHint(board, mine.Y - 1, mine.X - 1);
         }
         if (mine.X + 1 < size.X)
         {
-            //printf("sou B e mandei encher %d %d", mine.Y - 1, mine.X + 1);
             addHint(board, mine.Y - 1, mine.X + 1);
         }
-        //printf("sou C e mandei encher %d %d", mine.Y - 1, mine.X);
         addHint(board, mine.Y - 1, mine.X);
     }
     if (mine.Y + 1 < size.Y)
     {
         if (mine.X - 1 >= 0)
         {
-            //printf("sou D e mandei encher %d %d", mine.Y + 1, mine.X - 1);
             addHint(board, mine.Y + 1, mine.X - 1);
         }
         if (mine.X + 1 < size.X)
         {
-            //printf("sou E e mandei encher %d %d", mine.Y + 1, mine.X + 1);
             addHint(board, mine.Y + 1, mine.X + 1);
         }
-        //printf("sou F e mandei encher %d %d", mine.Y + 1, mine.X);
         addHint(board, mine.Y + 1, mine.X);
     }
     if (mine.X - 1 >= 0)
     {
-        //printf("sou G e mandei encher %d %d", mine.Y, mine.X - 1);
         addHint(board, mine.Y, mine.X - 1);
     }
     if (mine.X + 1 < size.X)
     {
-        //printf("sou H e mandei encher %d %d", mine.Y, mine.X + 1);
         addHint(board, mine.Y, mine.X + 1);
     }
 }

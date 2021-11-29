@@ -10,7 +10,7 @@
  * 2 - sorteio de pivo aleatorio
  * o algoritmo ainda aplica o insertion sort a partir de vetores abaixo de 10 numeros e agrupa numeros iguais para 
  * evitar trocas desnecessarias
- */
+*/
 
 void insertionSort(int arr[], int start, int end)
 {

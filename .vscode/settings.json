@@ -1,6 +1,16 @@
 {
     "git.ignoreLimitWarning": true,
     "files.associations": {
-        "cmath": "c"
+        "cmath": "c",
+        "memory": "c",
+        "ostream": "c",
+        "system_error": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "xmemory0": "c",
+        "xstring": "c",
+        "xtr1common": "c",
+        "xutility": "c"
     }
 }

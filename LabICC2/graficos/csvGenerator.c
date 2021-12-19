@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define TO_DO 10000 // mude para tamanho do vetor
-#define MARKS 10    // tamanho das marcas para media
+#define TO_DO 100 // mude para tamanho do vetor
+#define MARKS 10  // tamanho das marcas para media
 
 void insertion_sort(int vetor[], int size)
 {
@@ -75,7 +75,6 @@ void intercala(int p, int q, int r, int v[])
         v[i] = w[i - p]; // 11
     free(w);             // 12
 }
-
 void mergesort(int p, int r, int v[])
 {
     if (p < r - 1)
@@ -109,7 +108,6 @@ void rev_intercala(int p, int q, int r, int v[])
         v[i] = w[i - p]; // 11
     free(w);             // 12
 }
-
 void rev_mergesort(int p, int r, int v[])
 {
     if (p < r - 1)
@@ -127,13 +125,11 @@ void swap(int *vetor, int i, int j)
     vetor[i] = vetor[j];
     vetor[j] = temp;
 }
-
 int select_pivo(int *vetor, int inicio, int fim)
 {
     swap(vetor, (inicio + fim + (fim - inicio) / 2 + inicio) / 3, fim);
     return vetor[fim];
 }
-
 void quickSort(int *vetor, int inicio, int fim)
 {
     // condicao de parada
@@ -179,35 +175,6 @@ void quickSort(int *vetor, int inicio, int fim)
     return;
 }
 
-/* void heapsort(int a[], int n) {
-   int i = n / 2, pai, filho, t;
-   while(1) {
-      if (i > 0) {
-          i--;
-          t = a[i];
-      } else {
-          n--;
-          if (n <= 0) return;
-          t = a[n];
-          a[n] = a[0];
-      }
-      pai = i;
-      filho = i * 2 + 1;
-      while (filho < n) {
-          if ((filho + 1 < n)  &&  (a[filho + 1] > a[filho]))
-              filho++;
-          if (a[filho] > t) {
-             a[pai] = a[filho];
-             pai = filho;
-             filho = pai * 2 + 1;
-          } else {
-             break;
-          }
-      }
-      a[pai] = t;
-   }
-} */
-
 void heapifyMax(int *vetor, int pai, int tamanho)
 {
     int filho = pai * 2;
@@ -227,14 +194,12 @@ void heapifyMax(int *vetor, int pai, int tamanho)
         heapifyMax(vetor, filho, tamanho);
     }
 }
-
 void heapsort(int *vetor, int tamanho)
 {
     int ultimoPai = (int)tamanho / 2.0;
     int i;
     for (i = ultimoPai; i >= 1; i--)
         heapifyMax(vetor, i, tamanho);
-
 
     // processo de ordena��o
     while (tamanho >= 2)
@@ -249,38 +214,198 @@ void heapsort(int *vetor, int tamanho)
     }
 }
 
+typedef struct
+{
+    int key;
+    int value;
+    // outros atributos
+} Record;
+typedef struct node
+{
+    Record elem;
+    struct node *next;
+} Node;
+typedef struct bucket
+{
+    Node *begin;
+    Node *end;
+} Bucket;
+void bucketSort(Record *vetor, int tamanho)
+{
+    // 1) Percorrer as chaves e verificar o m�nimo e m�ximo
+    int max, min;
+    max = min = vetor[0].key;
+    int i = 0;
+    for (i = 0; i < tamanho; i++)
+    {
+        if (vetor[i].key > max)
+            max = vetor[i].key;
+        if (vetor[i].key < min)
+            min = vetor[i].key;
+    }
+
+    // 2) Cria��o de um vetor adicional de listas (buckets)
+    Bucket *B = (Bucket *)calloc(max - min + 1, sizeof(Bucket));
+
+    // 3) Percorrer o vetor e preencher os buckets de acordo com as chaves
+    for (i = 0; i < tamanho; i++)
+    {
+        int posicaoKey = vetor[i].key - min;
+
+        // criando novo n�
+        Node *novo = malloc(sizeof(Node));
+        novo->elem = vetor[i];
+        novo->next = NULL;
+
+        // inserindo na fila
+        if (B[posicaoKey].begin == NULL)
+            B[posicaoKey].begin = novo;
+        else
+            (B[posicaoKey].end)->next = novo;
+        B[posicaoKey].end = novo;
+    }
+
+    // 4) Posicionar os elementos no vetor original, retirando elementos da lista
+    int j = 0;
+    for (i = 0; i <= (max - min); i++)
+    {
+        Node *posicao;
+        posicao = B[i].begin;
+        while (posicao != NULL)
+        {
+            vetor[j] = posicao->elem;
+            j++;
+
+            Node *deletar = posicao;
+            posicao = posicao->next;
+            B[i].begin = posicao;
+            free(deletar);
+        }
+    }
+    free(B);
+}
+void rev_bucketSort(Record *vetor, int tamanho)
+{
+    // 1) Percorrer as chaves e verificar o m�nimo e m�ximo
+    int max, min;
+    max = min = vetor[0].key;
+    int i = 0;
+    for (i = 0; i < tamanho; i++)
+    {
+        if (vetor[i].key > max)
+            max = vetor[i].key;
+        if (vetor[i].key < min)
+            min = vetor[i].key;
+    }
+
+    // 2) Cria��o de um vetor adicional de listas (buckets)
+    Bucket *B = (Bucket *)calloc(max - min + 1, sizeof(Bucket));
+
+    // 3) Percorrer o vetor e preencher os buckets de acordo com as chaves
+    for (i = 0; i < tamanho; i++)
+    {
+        int posicaoKey = vetor[i].key - min;
+
+        // criando novo n�
+        Node *novo = malloc(sizeof(Node));
+        novo->elem = vetor[i];
+        novo->next = NULL;
+
+        // inserindo na fila
+        if (B[posicaoKey].begin == NULL)
+            B[posicaoKey].begin = novo;
+        else
+            (B[posicaoKey].end)->next = novo;
+        B[posicaoKey].end = novo;
+    }
+
+    // 4) Posicionar os elementos no vetor original, retirando elementos da lista
+    int j = 0;
+    for (i = (max - min) - 1; i >= 0; i--)
+    {
+        Node *posicao;
+        posicao = B[i].begin;
+        while (posicao != NULL)
+        {
+            vetor[j] = posicao->elem;
+            j++;
+
+            Node *deletar = posicao;
+            posicao = posicao->next;
+            B[i].begin = posicao;
+            free(deletar);
+        }
+    }
+    free(B);
+}
+
+void countingSort(int *vetor, int tamanho)
+{
+    int max, min, j = 0;
+    max = min = vetor[0];
+    int i = 0;
+    for (i = 1; i < tamanho; i++)
+    {
+        if (vetor[i] > max)
+            max = vetor[i];
+        if (vetor[i] < min)
+            min = vetor[i];
+    }
+
+    int *vetorCounting = calloc((max - min + 1), sizeof(int));
+
+    for (i = 1; i < tamanho; i++)
+    {
+        vetorCounting[vetor[i] - min]++;
+    }
+
+    for (i = 0; i < max - min + 1; i++)
+    {
+        while (vetorCounting[i] != 0)
+        {
+            vetor[j] = i;
+            vetorCounting[i]--;
+            j++;
+        }
+        
+    }
+    free(vetorCounting);
+}
+
 int main(int argc, char const *argv[])
 {
+    int geracaoVetor = atoi(argv[1]);
+    int tamanhoVetor = atoi(argv[2]);
     clock_t start, end;
     double times[MARKS];
-    int to_order[TO_DO];
+    int *to_order = malloc(tamanhoVetor * sizeof(int));
     srand(time(NULL));
 
     for (int i = 0; i < MARKS; i++)
     {
-        // printf("marca:%d\n", i);
-        for (int j = 0; j < TO_DO; j++)
+        for (int j = 0; j < tamanhoVetor; j++)
         {
-            to_order[j] = rand();
-            // printf("%d ", to_order[j]);
+            if (geracaoVetor == 0) // aleat�rio
+                to_order[j] = rand() % 1000;
+            else if (geracaoVetor == 1) // ordenado
+                to_order[j] = i;
+            else if (geracaoVetor == 2) // invertido
+                to_order[j] = tamanhoVetor - i;
+            else if (geracaoVetor == 3 && j <= tamanhoVetor / 2) // primeira metade ordenada e o restante aleat�rio
+                to_order[j] = j;
+            else if (geracaoVetor == 3) // primeira metade ordenada e o restante aleat�rio
+                to_order[j] = (rand() % 1000) + i;
         }
-        // printf("\n");
-
-        // mergesort(0, TO_DO, to_order);
-
-        /*     for (int j = 0; j < TO_DO; j++)
-            {
-                printf("%d ", to_order[j]);
-            }
-            printf("\n"); */
-
         start = clock();
-        mergesort(0, TO_DO, to_order);
-        // bubble_sort(to_order);
-        // insertion_sort(to_order, TO_DO);
+        // mergesort(0, TO_DO, to_order);
+        //  bubble_sort(to_order);
+        //  insertion_sort(to_order, TO_DO);
 
         // quickSort(to_order, 0, TO_DO);
         // heapsort(to_order, TO_DO);
+
+        // bucketSort(to_order, tamanhoVetor);
+        countingSort(to_order, tamanhoVetor);
         end = clock();
         times[i] = ((double)end - (double)start) / CLOCKS_PER_SEC;
 
@@ -291,11 +416,11 @@ int main(int argc, char const *argv[])
         printf("\n"); */
     }
 
-    FILE *file = fopen("merge_a.csv", "a");
+    FILE *file = fopen("counting_best.csv", "a");
 
     for (int i = 0; i < MARKS; i++)
     {
-        fprintf(file, "%d,%.6f\n", TO_DO, (double)times[i]);
+        fprintf(file, "%d,%.6f\n", tamanhoVetor, (double)times[i]);
     }
 
     fclose(file);
